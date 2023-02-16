@@ -42,25 +42,21 @@ import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 public class FastLockingBenchmark {
 
-    private int doSomething() {
-        // Actually ... do nothing ;-)
-        return 0;
-    }
+    int x;
 
     @Benchmark
-    public void testSimpleSync(Blackhole bh) {
-        synchronized(this) {
-            bh.consume(doSomething());
+    public int testSimpleSync() {
+        synchronized (this) {
+            return x;
         }
     }
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
             .include(FastLockingBenchmark.class.getSimpleName())
-            .jvmArgs("-XX:-EliminateLocks")
             .forks(1)
             .build();
         new Runner(opt).run();

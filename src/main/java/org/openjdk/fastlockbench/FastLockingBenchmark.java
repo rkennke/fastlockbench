@@ -47,11 +47,24 @@ public class FastLockingBenchmark {
 
     int x;
 
+  /*
     @Benchmark
     public int testSimpleSync() {
-        synchronized (this) {
+        synchronized(this) {
             return x;
         }
+    }
+  */
+
+    @Param({"0", "1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024", "2048", "4096", "8192" })
+    int backoff;
+
+    @Benchmark
+    public int testSync() {
+        synchronized(this) {
+            Blackhole.consumeCPU(backoff);
+        }
+        return x;
     }
 
     public static void main(String[] args) throws RunnerException {
